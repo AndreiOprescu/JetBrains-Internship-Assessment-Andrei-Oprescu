@@ -1,0 +1,4 @@
+.venv
+.idea
+cosqa-finetuned-model*
+result.txt
