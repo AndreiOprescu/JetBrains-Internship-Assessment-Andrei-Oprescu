@@ -5,15 +5,15 @@ import pandas as pd
 import uvicorn
 from pydantic import BaseModel, Field
 from sentence_transformers import SentenceTransformer
-import search_engine
+
 from Utils import search, create_search_index
 from fastapi import FastAPI
 
+from src.config import PRETRAINED_MODEL
+
 
 # --- Pydantic Models for API ---
-# These models define the structure of your API's
-# inputs (Request) and outputs (Response) and
-# provide automatic data validation.
+# These models define the structure of the API's inputs and outputs
 
 class SearchQuery(BaseModel):
     query: str = Field(..., description="The natural language query to search for.")
@@ -29,9 +29,7 @@ class SearchResponse(BaseModel):
     results: list[SearchResult]
 
 
-# --- Global Variables ---
-# These variables will be populated on startup and
-# used by the /search endpoint.
+# These variables will be populated on startup and used by the api
 model = None
 index = None
 all_documents = None
@@ -39,37 +37,38 @@ index_to_filename = None
 
 
 # --- FastAPI Startup Event ---
-# We use the 'lifespan' context manager to load the
-# model and index when the server starts.
+# This loads the model and the index
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # This code runs ONCE on server startup
+    # This code runs once on server startup
     global model, index, all_documents, index_to_filename
 
     print("Server starting up...")
     print("Loading fine-tuned model...")
-    # Load the model you trained (from your TEST mode)
-    model = SentenceTransformer('../cosqa-finetuned-model')
+
+    # Load the model
+    model = SentenceTransformer('all-MiniLM-L6-v2')
 
     print("Loading validation data for indexing...")
     val_raw = pd.read_json("hf://datasets/gonglinyuan/CoSQA/cosqa-dev.json")
 
     print("Creating search index...")
-    # This calls your helper function
+
+    # call the helper function for creating an index
     index, all_documents, index_to_filename = create_search_index(val_raw, model)
 
     print("--- Search Engine Ready ---")
 
     yield
 
-    # This code runs on server shutdown (optional)
+    # This code runs on server shutdown
     print("Server shutting down...")
     model = None
     index = None
 
 
-# --- Initialize FastAPI App ---
+# Initialize FastAPI App
 app = FastAPI(
     title="Code Search API",
     description="An API for semantic search over the CoSQA dataset.",
@@ -77,6 +76,7 @@ app = FastAPI(
     lifespan=lifespan  # This links the startup/shutdown logic
 )
 
+# Request for accepting a query and returning the relevant code snippets
 @app.post("/search", response_model=SearchResponse)
 async def search_endpoint(query: SearchQuery):
     """
@@ -87,8 +87,6 @@ async def search_endpoint(query: SearchQuery):
     return {"results": search_results}
 
 # --- Run the Server ---
-# This block allows you to run the server by
-# executing `python main_api.py` in your terminal.
 if __name__ == "__main__":
     print("Starting Uvicorn server at http://127.0.0.1:8000")
     uvicorn.run(app, host="127.0.0.1", port=8000)
