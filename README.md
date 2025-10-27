@@ -11,7 +11,7 @@ search_engine.ipynb is the file demonstrating all 3 tasks. It was put together a
 ### Using the Model Through the API
 
 To run the API, find the "api.py" file in src. Running this file will start the api which can receive requests for queries
-To query the model, send the following request (This can easily be done using the ):
+To query the model, send the following request:
 
 POST http://127.0.0.1:8000/search
 Content-Type: application/json
