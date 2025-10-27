@@ -141,3 +141,19 @@ With 5 epochs, the following losses were logged:
 ![img_1.png](losses_per_epoch.png)
 
 As can be seen from the second graph, the losses decrease as the model trains on more epochs, showing that it gets more accurate.
+
+## Bonus Tasks
+
+To see how the metrics change when we apply the model only on function names, I updated the create_search_index method to take only the method name in consideration through the use of regular expressions.
+Now, the metrics are substantially lower, even after training. This was expected, since the documents (now method names) are less descriptive, meaning that their vector representations may not be as precise as they could be.
+
+RECALL@10 AVERAGE: 0.7152317880794702
+MRR@10 AVERAGE: 0.7152317880794702
+NDGC@10 AVERAGE: 0.5301269442750365
+
+Additionally, I investigated how different efSearch values (16, 32, 64, 128, 256) for the vector index affect the accuracy and metrics. efSearch defines how thorough the searches for the index are. Higher values should find the correct result in the index more often than lower efSearch values.
+
+![img.png](efSearch_plot.png)
+We indeed see that increasing the efSearch hyperparameter of the index does result in higher metric results. However, there is no significant improvement in performance after ef = 64.
+
+
