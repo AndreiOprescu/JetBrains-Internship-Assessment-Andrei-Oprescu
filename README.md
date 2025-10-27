@@ -3,7 +3,7 @@
 This is the GitHub repository of Andrei Oprescu for the implementation of the JetBrains Internship task.
 Below you can find commentaries on the tasks given, as well as instructions on how to run the search-engine model and API.
 
-search_engine.ipynb is the file demonstrating all 3 tasks. It was put together after the making of search_engine.py, which is the more 'complete' product because of its customizbility.
+search_engine.ipynb is the file demonstrating all 3 tasks. It was put together after the making of search_engine.py, which is the more 'complete' product because of its customizability.
 
 
 ## Project Description
@@ -147,9 +147,9 @@ As can be seen from the second graph, the losses decrease as the model trains on
 To see how the metrics change when we apply the model only on function names, I updated the create_search_index method to take only the method name in consideration through the use of regular expressions.
 Now, the metrics are substantially lower, even after training. This was expected, since the documents (now method names) are less descriptive, meaning that their vector representations may not be as precise as they could be.
 
-RECALL@10 AVERAGE: 0.7152317880794702
-MRR@10 AVERAGE: 0.7152317880794702
-NDGC@10 AVERAGE: 0.5301269442750365
+RECALL@10 AVERAGE: 0.7152317880794702  
+MRR@10 AVERAGE: 0.7152317880794702  
+NDGC@10 AVERAGE: 0.5301269442750365  
 
 Additionally, I investigated how different efSearch values (16, 32, 64, 128, 256) for the vector index affect the accuracy and metrics. efSearch defines how thorough the searches for the index are. Higher values should find the correct result in the index more often than lower efSearch values.
 
